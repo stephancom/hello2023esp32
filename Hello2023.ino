@@ -21,11 +21,6 @@
 // U8g2 Contructor (Frame Buffer)
 U8G2_SSD1306_72X40_ER_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);   // EastRising 0.42" OLED
 
-void setup(void) {
-  Wire.begin(SDA_PIN, SCL_PIN);
-  u8g2.begin();
-}
-
 #define NUM_EVENTS 114
 const char * const events[][3] PROGMEM = {
   { "",       "JANUARY 2022",     ""},
@@ -147,19 +142,55 @@ const char * const events[][3] PROGMEM = {
 };
 
 int event = 0;
+unsigned long start_millis;
+unsigned long current_millis;
+unsigned long period = 1000;
+int mode = 0;
+int hny = 0;
+
+void setup(void) {
+  Wire.begin(SDA_PIN, SCL_PIN);
+  u8g2.begin();
+  start_millis = millis();
+}
 
 void loop(void) {
   char linebuf[20]; // 16 should be enough?
+  current_millis = millis();
+  if(current_millis - start_millis < period) { return; }
+
   u8g2.clearBuffer(); // clear the internal memory
-  u8g2.setFont(u8g2_font_adventurer_tr);	// choose a suitable font
-  strcpy_P(linebuf, events[event][0]);
-  u8g2.drawStr(5,12, linebuf);
-  u8g2.setFont(u8g2_font_efraneextracondensed_te);  // choose a suitable font
-  strcpy_P(linebuf, events[event][1]);
-  u8g2.drawStr(0,25, linebuf);
-  strcpy_P(linebuf, events[event][2]);
-  u8g2.drawStr(0,40, linebuf);
+
+  if (mode == 0) {
+    u8g2.setFont(u8g2_font_adventurer_tr);	
+    strcpy_P(linebuf, events[event][0]);
+    u8g2.drawStr(5,12, linebuf);
+    u8g2.setFont(u8g2_font_efraneextracondensed_te);  
+    strcpy_P(linebuf, events[event][1]);
+    u8g2.drawStr(0,25, linebuf);
+    strcpy_P(linebuf, events[event][2]);
+    u8g2.drawStr(0,40, linebuf);
+    event = (event + 1) % NUM_EVENTS;
+    period = 1000;
+    mode = 1;
+  } else {
+    u8g2.setFont(u8g2_font_mystery_quest_24_tr);  
+    period = 333;
+
+    if (hny == 0) {
+      u8g2.drawStr( 5,30, "Happy");    
+    } else if (hny == 1) {
+      u8g2.drawStr(15,30, "new");
+    } else if (hny == 2) {
+      u8g2.drawStr(10,30, "year");
+    } else {
+      u8g2.setFont(u8g2_font_mystery_quest_32_tr);  
+      u8g2.drawStr( 3,34, "2023");
+    }
+
+    hny = (hny + 1) % 4;
+  }
+
   u8g2.sendBuffer();					// transfer internal memory to the display
-  delay(5000);
-  event = (event + 1) % NUM_EVENTS;
+  start_millis = current_millis;
 }
