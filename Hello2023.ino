@@ -135,7 +135,7 @@ const char * const events[][3] PROGMEM = {
   {  "Dec 5",    "FUSION",           "ignition!"},
   {  "Dec 7",    "China eases",      "COVID restrictions"},
   { "Dec 18",    "FIFA World Cup",   "Argentina wins!"},
-  {"Dec 29 d.", "Pelé"},
+  {"Dec 29 d.", "Pelé", ""},
   {"Dec 29 d.", "Dame Vivienne", "Westwood"},
   {"Dec 30 d.", "Barbara", "Walters"},
   {"Dec 31 d.", "Pope Benedict", "XVI"},
