@@ -162,6 +162,7 @@ void loop(void) {
   u8g2.clearBuffer(); // clear the internal memory
 
   if (mode == 0) {
+    period = 5000;
     u8g2.setFont(u8g2_font_adventurer_tr);	
     strcpy_P(linebuf, events[event][0]);
     u8g2.drawStr(5,12, linebuf);
@@ -171,21 +172,21 @@ void loop(void) {
     strcpy_P(linebuf, events[event][2]);
     u8g2.drawStr(0,40, linebuf);
     event = (event + 1) % NUM_EVENTS;
-    period = 1000;
     mode = 1;
   } else {
     u8g2.setFont(u8g2_font_mystery_quest_24_tr);  
-    period = 333;
+    period = 1000;
 
     if (hny == 0) {
-      u8g2.drawStr( 5,30, "Happy");    
+      u8g2.drawStr( 4,30, "Happy");    
     } else if (hny == 1) {
       u8g2.drawStr(15,30, "new");
     } else if (hny == 2) {
-      u8g2.drawStr(10,30, "year");
+      u8g2.drawStr(11,30, "year");
     } else {
       u8g2.setFont(u8g2_font_mystery_quest_32_tr);  
-      u8g2.drawStr( 3,34, "2023");
+      u8g2.drawStr(3,35, "2023");
+      mode = 0;      
     }
 
     hny = (hny + 1) % 4;
